@@ -74,14 +74,14 @@ class MinStack:
         else:
             if val <= self.aux[-1]:
                 self.aux.append(val)
-            else:
-                self.aux.append(self.aux[-1])
+            # else:
+            #     self.aux.append(self.aux[-1])
 
     def pop(self) -> None:
         if len(self.main) > 0:
-            self.main.pop(-1)
-        if len(self.aux) > 0:
-            self.aux.pop(-1)
+            top = self.main.pop(-1)
+            if top == self.aux[-1]:
+                self.aux.pop(-1)
 
     def top(self) -> int:
         if len(self.main) > 0:
