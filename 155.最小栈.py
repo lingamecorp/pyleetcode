@@ -61,35 +61,36 @@
 #
 
 # @lc code=start
+
+
 class MinStack:
 
     def __init__(self):
-        self.main = []
-        self.aux = []
+        self.stack = []
+        self.min_ = None
 
     def push(self, val: int) -> None:
-        self.main.append(val)
-        if len(self.aux) == 0:
-            self.aux.append(val)
-        else:
-            if val <= self.aux[-1]:
-                self.aux.append(val)
-            # else:
-            #     self.aux.append(self.aux[-1])
+        if self.min_ is None:
+            self.min_ = val
+        diff = val - self.min_
+        if diff < 0:
+            self.min_ = val
+        self.stack.append(diff)
 
     def pop(self) -> None:
-        if len(self.main) > 0:
-            top = self.main.pop(-1)
-            if top == self.aux[-1]:
-                self.aux.pop(-1)
+        if len(self.stack) > 0:
+            top = self.stack[-1]
+            if top <= 0:
+                self.min_ = self.min_ - top
+            self.stack.pop(-1)
 
     def top(self) -> int:
-        if len(self.main) > 0:
-            return self.main[-1]
+        if len(self.stack) > 0:
+            return self.min_ + self.stack[-1]
 
     def getMin(self) -> int:
-        if len(self.aux) > 0:
-            return self.aux[-1]
+        if len(self.stack) > 0:
+            return self.min_
 
 
 # Your MinStack object will be instantiated and called as such:
