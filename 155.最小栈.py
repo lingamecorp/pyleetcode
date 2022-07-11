@@ -73,7 +73,7 @@ class MinStack:
         if self.min_ is None:
             self.min_ = val
         diff = val - self.min_
-        if diff < 0:
+        if diff <= 0:
             self.min_ = val
         self.stack.append(diff)
 
@@ -83,10 +83,16 @@ class MinStack:
             if top <= 0:
                 self.min_ = self.min_ - top
             self.stack.pop(-1)
+            if len(self.stack) == 0:
+                self.min_ = None
 
     def top(self) -> int:
         if len(self.stack) > 0:
-            return self.min_ + self.stack[-1]
+            top = self.stack[-1]
+            if top <= 0:
+                return self.min_
+            else:
+                return top + self.min_
 
     def getMin(self) -> int:
         if len(self.stack) > 0:
