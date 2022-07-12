@@ -16,14 +16,19 @@ from audioop import reverse
 def reverse_stack(stack: list, size: int) -> list:
     if not stack or len(stack) != size:
         return
-    return [i for i in _reverse(stack=stack)]
+    new_stack = []
+    last = _reverse(old_stack=stack, new_stack=new_stack)
+    new_stack.append(last)
+    return new_stack
 
 
-def _reverse(stack: list):
-    if stack:
-        val = stack.pop(-1)
-        yield from _reverse(stack)
-        yield val
+def _reverse(old_stack: list, new_stack: list):
+    if old_stack:
+        cur = old_stack.pop(-1)
+        pre =  _reverse(old_stack=old_stack, new_stack=new_stack)
+        if pre:
+            new_stack.append(pre)
+        return cur
 
 
 if __name__ == "__main__":
@@ -32,6 +37,7 @@ if __name__ == "__main__":
     expected1 = case1.copy()
     actual1 = reverse_stack(stack=case1, size=size)
     assert actual1 == expected1
+    # print(actual1)
 
     case2 = []
     size = 0
