@@ -10,37 +10,40 @@
 # 返回：[5,4,3,2,1]
 
 
-from audioop import reverse
+def reverse_stack(stack: list):
+    if stack:
+        reverse(stack)
+        return stack
 
 
-def reverse_stack(stack: list, size: int) -> list:
-    if not stack or len(stack) != size:
+def reverse(stack: list):
+    if not stack:
         return
-    new_stack = []
-    last = _reverse(old_stack=stack, new_stack=new_stack)
-    new_stack.append(last)
-    return new_stack
+    bottom = pop_bottom(stack)
+    reverse(stack)
+    stack.append(bottom)
 
 
-def _reverse(old_stack: list, new_stack: list):
-    if old_stack:
-        cur = old_stack.pop(-1)
-        pre =  _reverse(old_stack=old_stack, new_stack=new_stack)
-        if pre:
-            new_stack.append(pre)
-        return cur
+def pop_bottom(stack: list) -> int:
+    if stack:
+        top = stack.pop(-1)
+        if not stack:  # 此时已经到了栈底
+            return top
+        else:
+            bottom = pop_bottom(stack)
+            stack.append(top)
+            return bottom
 
 
 if __name__ == "__main__":
     case1 = [1, 2, 3, 4, 5]
-    size = len(case1)
-    expected1 = case1.copy()
-    actual1 = reverse_stack(stack=case1, size=size)
+    expected1 = [5, 4, 3, 2, 1]
+    actual1 = reverse_stack(stack=case1)
     assert actual1 == expected1
     # print(actual1)
 
     case2 = []
-    size = 0
     expected2 = None
-    actual2 = reverse_stack(stack=case2, size=size)
+    actual2 = reverse_stack(stack=case2)
     assert actual2 == expected2
+    # print(actual2)
