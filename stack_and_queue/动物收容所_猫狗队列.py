@@ -32,14 +32,15 @@
 # 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 
+from collections import deque
 from typing import List
 
 
 class AnimalShelf:
 
     def __init__(self):
-        self.catq = []
-        self.dogq = []
+        self.catq = deque()
+        self.dogq = deque()
 
     def enqueue(self, animal: List[int]) -> None:
         if animal and len(animal) == 2:
@@ -52,24 +53,24 @@ class AnimalShelf:
         if not self.catq and not self.dogq:
             return [-1, -1]
         elif not self.catq and self.dogq:
-            return self.dogq.pop(0)
+            return self.dogq.popleft()
         elif self.catq and not self.dogq:
-            return self.catq.pop(0)
+            return self.catq.popleft()
         else:
             if self.catq[0][0] <= self.dogq[0][0]:
-                return self.catq.pop(0)
+                return self.catq.popleft()
             else:
-                return self.dogq.pop(0)
+                return self.dogq.popleft()
 
     def dequeueDog(self) -> List[int]:
         if self.dogq:
-            return self.dogq.pop(0)
+            return self.dogq.popleft()
         else:
             return [-1, -1]
 
     def dequeueCat(self) -> List[int]:
         if self.catq:
-            return self.catq.pop(0)
+            return self.catq.popleft()
         else:
             return [-1, -1]
 
