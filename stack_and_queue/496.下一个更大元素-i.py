@@ -88,18 +88,20 @@ class Solution:
         for i in range(len(nums2)-2, -1, -1):
             cur = nums2[i]
             top = mono_stack[-1]
-            if cur > top:
-                while mono_stack and cur > top:
+            # if cur > top:
+            if cur < top:
+                nges[cur] = top
+                while mono_stack and cur < top:
                     mono_stack.pop()
                     if mono_stack:
                         top = mono_stack[-1]
-                if cur <= top:
-                    nges[cur] = top
-                if not mono_stack:
-                    nges[cur] = -1
+                # if cur <= top:
+                #     nges[cur] = top
+                # if not mono_stack:
+                #     nges[cur] = -1
                 # mono_stack.append(cur)
             else:
-                nges[cur] = top
+                nges[cur] = -1
             mono_stack.append(cur)
         # 匹配nums1各个元素对应的NGE
         results = [nges[k] for k in nums1]
@@ -108,3 +110,18 @@ class Solution:
 
 # @lc code=end
 
+
+if __name__ == "__main__":
+    s = Solution()
+
+    nums1 = [4, 1, 2]
+    nums2 = [1, 3, 4, 2]
+    expected = [-1, 3, -1]
+    actual = s.nextGreaterElement(nums1, nums2)
+    assert actual == expected
+
+    nums1 = [5, 6, 7, 8]
+    nums2 = [2, 5, 3, 6, 8, 4, 7, 1]
+    expected = [-1, 8, -1, -1]
+    actual = s.nextGreaterElement(nums1, nums2)
+    assert actual == expected
