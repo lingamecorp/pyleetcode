@@ -66,27 +66,45 @@ from typing import List
 # @lc code=start
 class Solution:
     def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
-        results = []
-        for v in nums1:
-            i = 0
-            while v != nums2[i] and i < len(nums2):
-                i += 1
-            if i == len(nums2):
-                results.append(-1)
-                continue
-            if v == nums2[i]:
-                if i == len(nums2) - 1:
-                    results.append(-1)
-                    continue
-                found = False
-                for j in range(i+1, len(nums2)):
-                    if nums2[j] > v:
-                        results.append(nums2[j])
-                        found = True
-                        break
-                if not found:
-                    results.append(-1)
+        """ 
+        解法：单调递减栈 + 哈希表
+
+        主要思路：由于nums1是nums2的子集，所以只要得到nums2中各个元素对应的NGE(Next Greater Element)
+        即可，这些元素及其对应的NGE使用哈希表存储，key是nums2的各个元素，value是其对应的NGE；在寻找每个元
+        素对应的NGE时，需要从后往前遍历nums2来维护一个单调递减的栈；这里不能用单调递增的栈是因为递增栈在遍历
+        时可能会丢失值更大的元素（例如当nums2为[2,5,3,6,8,4,7,1]）.
+
+        回顾暴力解法，在该解法中，首先需要在nums2中逐一定位nums1的各个元素，其时间复杂度为O(n^2)，然后再在
+        nums中搜索给定元素对应的NGE，其时间复杂度为O(n)，总共的时间复杂度是O(n^2). 单调栈+哈希表解法改进的
+        地方就是，使用单调栈寻找nums2的NGEs，其时间复杂度为O(n2)，通过使用哈希表来存储nums2的NGEs，使得寻找
+        nums1的NGEs的时间复杂度变为O(n1)，当然，为此付出的空间复杂度变为O(n2).
+        """
+        mono_stack = []  # Monotonically decreasing stack
+        nges = dict()    # Next Greater Elements
+        # nums2最后一个元素肯定没有NGE
+        nges[nums2[-1]] = -1
+        mono_stack.append(nums2[-1])
+        # 从后往前遍历nums2，寻找各个元素对应的NGE
+        for i in range(len(nums2)-2, -1, -1):
+            cur = nums2[i]
+            top = mono_stack[-1]
+            if cur > top:
+                while mono_stack and cur > top:
+                    mono_stack.pop()
+                    if mono_stack:
+                        top = mono_stack[-1]
+                if cur <= top:
+                    nges[cur] = top
+                if not mono_stack:
+                    nges[cur] = -1
+                # mono_stack.append(cur)
+            else:
+                nges[cur] = top
+            mono_stack.append(cur)
+        # 匹配nums1各个元素对应的NGE
+        results = [nges[k] for k in nums1]
         return results
+
 
 # @lc code=end
 
