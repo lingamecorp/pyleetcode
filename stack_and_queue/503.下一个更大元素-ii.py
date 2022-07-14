@@ -44,7 +44,7 @@
 # 
 # 
 # 1 <= nums.length <= 10^4
-# -10^9 <= nums[i] <= 10^9
+# -10^9 <= nums[j] <= 10^9
 # 
 # 
 #
@@ -56,36 +56,20 @@ from typing import List
 # @lc code=start
 class Solution:
     def nextGreaterElements(self, nums: List[int]) -> List[int]:
+        """ 
+        本题思路：循环数组模拟双倍后的数组 + 单调递减栈从后往前遍历
+        """
         mono_stack = []  # Monotonically decreasing stack
-        # nges = {k: -1 for k in nums}    # Next Greater Elements
-        nges = [-1] * len(nums)
-        # 第一轮遍历，使用递减栈从后往前遍历nums，寻找各个元素对应的NGE
-        mono_stack.append(nums[-1])
-        for i in range(len(nums)-2, -1, -1):
-            cur = nums[i]
-            top = mono_stack[-1]
-            if cur > top:
-                while mono_stack and cur > top:
-                    mono_stack.pop()
-                    if mono_stack:
-                        top = mono_stack[-1]
-                if cur < top:
-                    nges[i] = top
-                if not mono_stack:
-                    nges[i] = -1
-                # mono_stack.append(cur)
-            if cur < top:
-                nges[i] = top
-            mono_stack.append(cur)
-        # 第二轮遍历，使用递增栈从前往后遍历nums，为第一轮没有找到NGE的元素重新搜索NGE
-        mono_stack.clear()
-        mono_stack.append(nums[0])
-        for i in range(1, len(nums)):
-            cur = nums[i]
-            top = mono_stack[-1]
-            if cur < top and nges[i] == -1:
-                nges[i] = top
-            if cur > top:
-                mono_stack.append(cur)
+        nges = [-1] * len(nums)  # Next Greater Elements
+        n = len(nums)
+        for i in range(2*n-1, -1, -1):  # 通过循环数组来模拟双倍后的数组
+            j = i % n
+            while mono_stack and nums[j] >= mono_stack[-1]:  # 因为要找的是更大的元素，所以这里必须是大于等于
+                mono_stack.pop()
+            if not mono_stack:
+                nges[j] = -1
+            else:
+                nges[j] = mono_stack[-1]
+            mono_stack.append(nums[j])
         return nges
 # @lc code=end
